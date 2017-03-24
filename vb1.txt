@@ -21,20 +21,22 @@ ln -s /usr/share/zoneinfo/Europe/Budapest /etc/localtime
 hwclock --systohc
 cp /etc/locale.gen /etc/locale.gen.v0
 nano /etc/locale.gen
-	hu_HU.UTF-8 UTF-8
+	Kivenni a # jelet a következő sorból: ––
+	hu_HU.UTF-8 UTF-8 ””
 locale-gen
 nano /etc/locale.conf
-	LANG=hu_HU.UTF-8
+	LANG=hu_HU.UTF-8 „„
 nano /etc/vconsole.conf
-	KEYMAP=hu
-	FONT=lat2-16
-	FONT_MAP=8859-2
+	KEYMAP=hu „„
+	FONT=lat2-16 „„
+	FONT_MAP=8859-2 „„
 nano /etc/hostname
-	vb1
+	vb1 „„
 cp /etc/hosts /etc/hosts.v0
 nano /etc/hosts
-	vb1
-	vb1
+	A sorok végére hozzáadni tab után: ––
+	vb1 „„
+	vb1 „„
 mkinitcpio -p linux
 passwd
 pacman -S grub networkmanager
