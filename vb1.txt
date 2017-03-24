@@ -1,0 +1,47 @@
+loadkeys hu
+setfont lat2-16 -m 8859-2
+timedatectl set-ntp true
+timedatectl set-timezone Europe/Budapest
+parted /dev/sda
+	mklabel msdos
+	mkpart primary ext4 0% 13GiB
+	set 1 boot on
+	mkpart primary linux-swap 13GiB 100%
+	q
+mkfs.ext4 /dev/sda1
+mkswap /dev/sda2
+swapon /dev/sda2
+mount /dev/sda1 /mnt
+pacstrap -i /mnt base
+cp /mnt/etc/fstab /mnt/etc/fstab.v0
+genfstab -U /mnt >> /mnt/etc/fstab
+arch-chroot /mnt
+rm /etc/localtime
+ln -s /usr/share/zoneinfo/Europe/Budapest /etc/localtime
+hwclock --systohc
+cp /etc/locale.gen /etc/locale.gen.v0
+nano /etc/locale.gen
+	hu_HU.UTF-8 UTF-8
+locale-gen
+nano /etc/locale.conf
+	LANG=hu_HU.UTF-8
+nano /etc/vconsole.conf
+	KEYMAP=hu
+	FONT=lat2-16
+	FONT_MAP=8859-2
+nano /etc/hostname
+	vb1
+cp /etc/hosts /etc/hosts.v0
+nano /etc/hosts
+	vb1
+	vb1
+mkinitcpio -p linux
+passwd
+pacman -S grub networkmanager
+grub-install --target=i386-pc /dev/sda
+cp /boot/grub/grub.cfg /boot/grub/grub.cfg.v0
+grub-mkconfig -o /boot/grub/grub.cfg
+systemctl enable NetworkManager.service
+exit
+umount -R /mnt
+shutdown now
