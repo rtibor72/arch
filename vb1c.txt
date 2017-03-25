@@ -28,4 +28,5 @@ pacman -S ttf-freefont¨noto-fonts ttf-dejavu¨
 pacman -S openbox
 nano .xinitrc
 	exec openbox-session „„
+rm vb1c.txt
 shutdown now
