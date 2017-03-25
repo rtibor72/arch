@@ -6,7 +6,6 @@ wget https://raw.githubusercontent.com/rtibor72/arch/master/vb1b.txt
 mc
 F3 vb1b.txt ––
 Virtual consol 2––
-pacman -S gpm
 gpm -m /dev/input/mice -t imps2
 pacman -S git base-devel --needed
 useradd -m -G wheel -s /bin/bash fh
