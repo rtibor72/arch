@@ -21,8 +21,8 @@ alsamixer
 	Fel
 	Esc
 pacman -S xorg-server xorg-server-utils xorg-xinit virtualbox-guest-utils¨mesa¨
-	A virtualbox-guest-modules-arch választása ––
-	2
+	1
+	2–A virtualbox-guest-modules-arch választása–
 localectl --no-convert set-x11-keymap hu,us pc105 ,
 pacman -S ttf-freefont¨noto-fonts ttf-dejavu¨
 pacman -S openbox
