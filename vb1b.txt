@@ -1,7 +1,7 @@
 Virtual consol 1––
 rm .bash_history
 pacman -Syu
-pacman -S wget
+pacman -S wget mc
 wget https://raw.githubusercontent.com/rtibor72/arch/master/vb1b.txt
 mc
 F3 vb1b.txt ––
