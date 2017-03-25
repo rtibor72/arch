@@ -3,7 +3,7 @@ loadkeys hu
 setfont lat2-16 -m 8859-2
 wget https://raw.githubusercontent.com/rtibor72/arch/master/vb1a.txt
 mc
-F3 vb1.txt ––
+F3 vb1a.txt ––
 Virtual consol 2––
 setfont lat2-16 -m 8859-2
 gpm -m /dev/input/mice -t imps2
