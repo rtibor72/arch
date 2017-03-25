@@ -22,4 +22,5 @@ makepkg -si
 cd
 rm -r cower
 exit
+rm vb1b.txt
 shutdown now
