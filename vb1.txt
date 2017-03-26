@@ -46,7 +46,8 @@ nano /etc/hosts
 	vb1 „„
 mkinitcpio -p linux
 passwd
-pacman -S grub networkmanager openssh
+pacman -S grub networkmanager openssh virtualbox-guest-utils
+	2–A virtualbox-guest-modules-arch választása–
 grub-install --target=i386-pc /dev/sda
 cp /boot/grub/grub.cfg /boot/grub/grub.cfg.v0
 grub-mkconfig -o /boot/grub/grub.cfg
