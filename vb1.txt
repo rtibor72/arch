@@ -59,4 +59,8 @@ systemctl enable NetworkManager.service
 systemctl enable sshd.service
 exit
 umount -R /mnt
+exit
+Virtual consol 1––
+F10––
+F10––
 shutdown now
