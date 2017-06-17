@@ -1,7 +1,7 @@
 Virtual consol 1––
 loadkeys hu
 setfont lat2-16 -m 8859-2
-wget https://raw.githubusercontent.com/rtibor72/arch/master/vb1.txt
+wget https://raw.githubusercontent.com/rtibor72/arch/master/archlinux-1.txt
 mc
 F3 vb1.txt ––
 Virtual consol 2––
