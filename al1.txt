@@ -1,4 +1,3 @@
-Arch Linux telepítése VirtualBox virtuális gépre ÷÷
 
 loadkeys hu
 setfont lat2-16 -m 8859-2
