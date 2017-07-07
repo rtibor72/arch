@@ -1,66 +1,152 @@
-Virtual consol 1––
+Arch Linux telepítése VirtualBox virtuális gépre ÷÷
+
 loadkeys hu
 setfont lat2-16 -m 8859-2
-wget https://raw.githubusercontent.com/rtibor72/arch/master/archlinux-1.txt
+
+wget https://raw.githubusercontent.com/rtibor72/arch/master/al1.txt
 mc
-F3 vb1.txt ––
-Virtual consol 2––
+
 setfont lat2-16 -m 8859-2
+
 gpm -m /dev/input/mice -t imps2
+
 timedatectl set-ntp true
-timedatectl set-timezone Europe/Budapest
+timedatectl status ¨¨
+
+lsblk ¨¨
+wipefs --all /dev/sda ¨¨
 parted /dev/sda
 	mklabel msdos
-	mkpart primary ext4 0% 14GiB
+	mkpart primary ext4 0% 256MiB
 	set 1 boot on
-	mkpart primary linux-swap 14GiB 100%
+	mkpart primary 256MiB 18GiB
+	set 2 lvm on
+	mkpart primary linux-swap 18GiB 100%
+	p ¨¨
 	q
+parted -l ¨¨
+
+lvmdiskscan ¨¨
+pvcreate /dev/sda2
+pvdisplay ¨¨
+vgcreate vg1 /dev/sda2
+vgdisplay ¨¨
+lvcreate -L 8G vg1 -n lv1
+lvdisplay ¨¨
+
 mkfs.ext4 /dev/sda1
-mkswap /dev/sda2
-swapon /dev/sda2
-mount /dev/sda1 /mnt
-pacstrap -i /mnt base
-cp /mnt/etc/fstab /mnt/etc/fstab.v0
-genfstab -U /mnt >> /mnt/etc/fstab
-arch-chroot /mnt
+mkfs.ext4 /dev/vg1/lv1
+df -Th ¨¨
+mkswap /dev/sda3
+swapon /dev/sda3
+free -h ¨¨
+
+mkdir -p /arch
+mount /dev/vg1/lv1 /arch
+mkdir -p /arch/boot
+mount /dev/sda1 /arch/boot
+findmnt ¨¨
+
+nano /etc/pacman.d/mirrorlist
+	A lokálisan legközelebbi szerver előre hozása. ––
+
+pacstrap -i /arch base
+
+cp /arch/etc/fstab /arch/etc/fstab.v0 ¨¨
+genfstab -U /arch >> /arch/etc/fstab
+cat /arch/etc/fstab ¨¨
+
+arch-chroot /arch
+
+pacman -S grub¨openssh lvm2 virtualbox-guest-utils¨
+	2–virtualbox-guest-modules-arch–
+
 rm /etc/localtime
 ln -s /usr/share/zoneinfo/Europe/Budapest /etc/localtime
 hwclock --systohc
-cp /etc/locale.gen /etc/locale.gen.v0
+
+cp /etc/locale.gen /etc/locale.gen.v0 ¨¨
 nano /etc/locale.gen
-	Kivenni a # jelet a következő sorból: ––
-	hu_HU.UTF-8 UTF-8 ””
+	´#´”hu_HU.UTF-8 UTF-8”
 locale-gen
+
 nano /etc/locale.conf
 	LANG=hu_HU.UTF-8 „„
+cat /etc/locale.conf ¨¨
+
 nano /etc/vconsole.conf
 	KEYMAP=hu „„
 	FONT=lat2-16 „„
 	FONT_MAP=8859-2 „„
+cat /etc/vconsole.conf ¨¨
+
 nano /etc/hostname
-	vb1 „„
-cp /etc/hosts /etc/hosts.v0
+	al1 „„
+cat /etc/hostname ¨¨
+cp /etc/hosts /etc/hosts.v0 ¨¨
+ip a ¨¨
 nano /etc/hosts
-	A sorok végére hozzáadni tab után: ––
-	vb1 „„
-	vb1 „„
-mkinitcpio -p linux
-passwd
-pacman -S grub networkmanager openssh virtualbox-guest-utils
-	2–A virtualbox-guest-modules-arch választása–
-grub-install --target=i386-pc /dev/sda
-cp /boot/grub/grub.cfg /boot/grub/grub.cfg.v0
-grub-mkconfig -o /boot/grub/grub.cfg
-cp /etc/ssh/sshd_config /etc/ssh/sshd_config.v0
+	127.0.0.1	localhost.localdomain	localhost ””
+	::1			localhost.localdomain	localhost ””
+	127.0.1.1	al1.localdomain	al1 „„
+cat /etc/hosts ¨¨
+
+ip a ¨¨
+ip route ¨¨
+nano /etc/systemd/network/10-nd1.link
+	[Match] „„
+	MACAddress=00:00:00:00:00:00 „„–A megfelelő MAC cím–
+	[Link] „„
+	Name=nd1 „„
+cat /etc/systemd/network/10-nd1.link ¨¨
+nano /etc/systemd/network/nd1-dhcp.network
+	[Match] „„
+	Name=nd1 „„
+	[Network] „„
+	DHCP=ipv4 „„
+cat /etc/systemd/network/nd1-dhcp.network ¨¨
+systemctl enable systemd-networkd.service
+
+cp /etc/ssh/sshd_config /etc/ssh/sshd_config.v0 ¨¨
 nano /etc/ssh/sshd_config
-	Kivenni a # jelet a következő sorból: ––
-”	PermitRootLogin”„yes„
-systemctl enable NetworkManager.service
+	´#´”PermitRootLogin”„yes„
 systemctl enable sshd.service
+
+Initramfs ÷÷
+–
+When you reach the "Create initial ramdisk environment" step in the Installation guide,
+add the lvm hook to /etc/mkinitcpio.conf (see below for details).
+
+Edit the file and insert lvm2 between block and filesystems like so:
+/etc/mkinitcpio.conf
+HOOKS="base udev ... block lvm2 filesystems"
+For systemd based initramfs:
+/etc/mkinitcpio.conf
+HOOKS="base systemd ... block sd-lvm2 filesystems"
+–
+cp /etc/mkinitcpio.conf /etc/mkinitcpio.conf.v0 ¨¨
+nano /etc/mkinitcpio.conf
+	”HOOKS="base udev ... block”„lvm2„”filesystems"”
+–
+The lvm2 and sd-lvm2 hooks are installed by lvm2, not mkinitcpio. If you are running mkinitcpio in an arch-chroot
+for a new installation, lvm2 must be installed inside the arch-chroot for mkinitcpio to find the lvm2 or sd-lvm2 hook.
+If lvm2 only exists outside the arch-chroot, mkinitcpio will output Error: Hook 'lvm2' cannot be found.
+–
+mkinitcpio -p linux
+
+passwd
+
+grub-install --target=i386-pc /dev/sda
+–
+If the root file system resides in a logical volume,
+the root= kernel parameter must be pointed to the mapped device, e.g /dev/mapper/vg-name-lv-name.
+–
+cp /etc/default/grub /etc/default/grub.v0 ¨¨
+cp /boot/grub/grub.cfg /boot/grub/grub.cfg.v0 ¨¨
+nano /etc/default/grub
+	”GRUB_CMDLINE_LINUX_DEFAULT="”„root=/dev/mapper/vg1-lv1„”"”
+grub-mkconfig -o /boot/grub/grub.cfg
+
 exit
-umount -R /mnt
-exit
-Virtual consol 1––
-F10––
-F10––
+umount -R /arch ¨¨
 shutdown now
