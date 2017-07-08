@@ -59,7 +59,7 @@ cat /arch/etc/fstab ¨¨
 
 arch-chroot /arch
 
-pacman -S grub¨openssh lvm2 virtualbox-guest-utils¨
+pacman -S grub¨openssh virtualbox-guest-utils¨
 	2–virtualbox-guest-modules-arch–
 
 rm /etc/localtime
