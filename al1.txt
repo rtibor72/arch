@@ -113,26 +113,11 @@ nano /etc/ssh/sshd_config
 	´#´”PermitRootLogin”„yes„
 systemctl enable sshd.service
 
-Initramfs ÷÷
-–
-When you reach the "Create initial ramdisk environment" step in the Installation guide,
-add the lvm hook to /etc/mkinitcpio.conf (see below for details).
-
-Edit the file and insert lvm2 between block and filesystems like so:
-/etc/mkinitcpio.conf
-HOOKS="base udev ... block lvm2 filesystems"
-For systemd based initramfs:
-/etc/mkinitcpio.conf
-HOOKS="base systemd ... block sd-lvm2 filesystems"
-–
 cp /etc/mkinitcpio.conf /etc/mkinitcpio.conf.v0 ¨¨
 nano /etc/mkinitcpio.conf
 	”HOOKS="base udev ... block”„lvm2„”filesystems"”
-–
-The lvm2 and sd-lvm2 hooks are installed by lvm2, not mkinitcpio. If you are running mkinitcpio in an arch-chroot
-for a new installation, lvm2 must be installed inside the arch-chroot for mkinitcpio to find the lvm2 or sd-lvm2 hook.
-If lvm2 only exists outside the arch-chroot, mkinitcpio will output Error: Hook 'lvm2' cannot be found.
-–
+cat /etc/mkinitcpio.conf ¨¨
+
 mkinitcpio -p linux
 
 passwd
@@ -141,13 +126,15 @@ grub-install --target=i386-pc /dev/sda
 –
 If the root file system resides in a logical volume,
 the root= kernel parameter must be pointed to the mapped device, e.g /dev/mapper/vg-name-lv-name.
+Kell ez?
 –
 cp /etc/default/grub /etc/default/grub.v0 ¨¨
 cp /boot/grub/grub.cfg /boot/grub/grub.cfg.v0 ¨¨
 nano /etc/default/grub
-	”GRUB_CMDLINE_LINUX_DEFAULT="”„root=/dev/mapper/vg1-lv1„”"”
+	”GRUB_CMDLINE_LINUX_DEFAULT="quiet”„root=/dev/mapper/vg1-lv1„”"”
+cat /etc/default/grub ¨¨
 grub-mkconfig -o /boot/grub/grub.cfg
-
+	Az LVM miatt megjelenő figyelmeztetéseket figyelmen kívül kell hagyni. ––
 exit
 umount -R /arch ¨¨
 shutdown now
