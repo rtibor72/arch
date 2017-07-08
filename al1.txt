@@ -1,3 +1,4 @@
+Arch Linux telepítése VirtualBox virtuális gépre ÷÷
 
 loadkeys hu
 setfont lat2-16 -m 8859-2
@@ -12,7 +13,7 @@ gpm -m /dev/input/mice -t imps2
 timedatectl set-ntp true
 timedatectl status ¨¨
 
-lsblk ¨¨
+lsblk -o NAME,SIZE,HOTPLUG,TYPE,PARTTYPE,FSTYPE,MOUNTPOINT ¨¨
 wipefs --all /dev/sda ¨¨
 parted /dev/sda
 	mklabel msdos
@@ -35,7 +36,7 @@ lvdisplay ¨¨
 
 mkfs.ext4 /dev/sda1
 mkfs.ext4 /dev/vg1/lv1
-df -Th ¨¨
+lsblk -o NAME,FSTYPE ¨¨
 mkswap /dev/sda3
 swapon /dev/sda3
 free -h ¨¨
@@ -44,6 +45,7 @@ mkdir -p /arch
 mount /dev/vg1/lv1 /arch
 mkdir -p /arch/boot
 mount /dev/sda1 /arch/boot
+df -Th ¨¨
 findmnt ¨¨
 
 nano /etc/pacman.d/mirrorlist
