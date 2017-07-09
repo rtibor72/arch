@@ -107,10 +107,11 @@ nano /etc/systemd/network/nd1-dhcp.network
 	DHCP=ipv4 „„
 cat /etc/systemd/network/nd1-dhcp.network ¨¨
 systemctl enable systemd-networkd.service
+systemctl enable systemd-resolved.service
 
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.v0 ¨¨
 nano /etc/ssh/sshd_config
-	´#´”PermitRootLogin”„yes„
+	´#´”PermitRootLogin”´prohibit-password´„yes„
 systemctl enable sshd.service
 
 cp /etc/mkinitcpio.conf /etc/mkinitcpio.conf.v0 ¨¨
@@ -123,18 +124,10 @@ mkinitcpio -p linux
 passwd
 
 grub-install --target=i386-pc /dev/sda
-–
-If the root file system resides in a logical volume,
-the root= kernel parameter must be pointed to the mapped device, e.g /dev/mapper/vg-name-lv-name.
-Kell ez?
-–
-cp /etc/default/grub /etc/default/grub.v0 ¨¨
 cp /boot/grub/grub.cfg /boot/grub/grub.cfg.v0 ¨¨
-nano /etc/default/grub
-	”GRUB_CMDLINE_LINUX_DEFAULT="quiet”„root=/dev/mapper/vg1-lv1„”"”
-cat /etc/default/grub ¨¨
 grub-mkconfig -o /boot/grub/grub.cfg
 	Az LVM miatt megjelenő figyelmeztetéseket figyelmen kívül kell hagyni. ––
+
 exit
 umount -R /arch ¨¨
 shutdown now
