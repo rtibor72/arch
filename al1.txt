@@ -31,7 +31,7 @@ pvcreate /dev/sda2
 pvdisplay ¨¨
 vgcreate vg1 /dev/sda2
 vgdisplay ¨¨
-lvcreate -L 8G vg1 -n lv1
+lvcreate -L 4G vg1 -n lv1
 lvdisplay ¨¨
 
 mkfs.ext4 /dev/sda1
