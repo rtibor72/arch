@@ -1,10 +1,14 @@
-Arch Linux telepítése VirtualBox virtuális gépre ÷÷
+Arch Linux telepítése VirtualBox virtuális gépre ¤¤
+
+Consol 1 ÷÷
 
 loadkeys hu
 setfont lat2-16 -m 8859-2
 
 wget https://raw.githubusercontent.com/rtibor72/arch/master/al1.txt
 mc
+
+Consol 2 ÷÷
 
 setfont lat2-16 -m 8859-2
 
