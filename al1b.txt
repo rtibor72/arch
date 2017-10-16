@@ -96,8 +96,6 @@ systemctl enable sshd.service
 
 nano /etc/mkinitcpio.conf
 	”HOOKS="base udev ... block”„lvm2„”filesystems"”
-cat /etc/mkinitcpio.conf ¨¨
-
 mkinitcpio -p linux
 
 passwd
@@ -109,3 +107,75 @@ grub-mkconfig -o /boot/grub/grub.cfg
 exit
 umount -R /arch ¨¨
 shutdown now
+
+
+
+nano /etc/grub.d/40_custom
+	menuentry "Arch1" {
+		load_video
+		set gfxpayload=keep
+		insmod lvm
+		set the_boot_uuid=e6a6977b-5bb4-4043-8d26-b9a5c6f8e7b1
+		set the_root_uuid=cbf1ad84-27e2-4a9a-921c-9c2f41330e25
+		search --fs-uuid $the_root_uuid --set=root
+		search --fs-uuid $the_boot_uuid --set=grub_boot
+		if [ $the_boot_uuid == $the_root_uuid ] ; then
+			set grub_boot=($grub_boot)/boot
+		else
+			set grub_boot=($grub_boot)
+		fi
+		linux $grub_boot/vmlinuz-linux root=/dev/disk/by-uuid/$the_root_uuid rw quiet
+		initrd $grub_boot/initramfs-linux.img
+	}
+	menuentry "Arch2" {
+		load_video
+		set gfxpayload=keep
+		insmod lvm
+		set the_boot_uuid=f2a43518-ef92-49f1-8fd5-0349db0a1785
+		set the_root_uuid=6399f4e7-d234-41f0-8150-257cb9eba27e
+		search --fs-uuid $the_root_uuid --set=root
+		search --fs-uuid $the_boot_uuid --set=grub_boot
+		if [ $the_boot_uuid == $the_root_uuid ] ; then
+			set grub_boot=($grub_boot)/boot
+		else
+			set grub_boot=($grub_boot)
+		fi
+		linux $grub_boot/vmlinuz-linux root=/dev/disk/by-uuid/$the_root_uuid rw quiet
+		initrd $grub_boot/initramfs-linux.img
+	}
+grub-mkconfig -o /boot/grub/grub.cfg
+
+
+nano /etc/default/grub
+	GRUB_DEFAULT=0 2 3
+grub-install --target=i386-pc /dev/sda
+grub-mkconfig -o /boot/grub/grub.cfg
+–
+NAME        FSTYPE      LABEL UUID                                   MOUNTPOINT
+sda                                                                  
+├─sda1      ext4              e6a6977b-5bb4-4043-8d26-b9a5c6f8e7b1   
+├─sda2      ext4              f2a43518-ef92-49f1-8fd5-0349db0a1785   /boot
+├─sda3      LVM2_member       EvCDlR-vOBa-OqDL-O2Zl-8ZhN-2UKL-jpVzX2 
+│ ├─vg1-lv1 ext4              cbf1ad84-27e2-4a9a-921c-9c2f41330e25   
+│ └─vg1-lv2 ext4              6399f4e7-d234-41f0-8150-257cb9eba27e   /
+└─sda4      swap              bb9a3941-1f52-4b12-a6b1-a7ab6be3966d   [SWAP]
+sr0         
+
+menuentry 'Arch Linux' --class arch --class gnu-linux --class gnu --class os $menuentry_id_option 'gnulinux-simple-6399f4e7-d234-41f0-8150-257cb9eba27e' {
+        load_video
+        set gfxpayload=keep
+        insmod gzio
+        insmod part_msdos
+        insmod ext2
+        set root='hd0,msdos2'
+        if [ x$feature_platform_search_hint = xy ]; then
+          search --no-floppy --fs-uuid --set=root --hint-bios=hd0,msdos2 --hint-efi=hd0,msdos2 --hint-baremetal=ahci0,msdos2  f2a43518-ef92-49f1-8fd5-0349db0a1$
+        else
+          search --no-floppy --fs-uuid --set=root f2a43518-ef92-49f1-8fd5-0349db0a1785
+        fi
+        echo    'Linux linux betöltése…'
+        linux   /vmlinuz-linux root=/dev/mapper/vg1-lv2 rw  quiet
+        echo    'Kiinduló ramdisk betöltése…'
+        initrd  /initramfs-linux.img
+}
+–
