@@ -5,7 +5,7 @@ Consol 1 ÷÷
 loadkeys hu
 setfont lat2-16 -m 8859-2
 
-wget https://raw.githubusercontent.com/rtibor72/arch/master/al1.txt
+wget https://raw.githubusercontent.com/rtibor72/arch/master/al1b.txt
 mc
 
 Consol 2 ÷÷
