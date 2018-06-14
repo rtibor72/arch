@@ -25,8 +25,9 @@ nano /etc/pacman.d/mirrorlist
 
 pacstrap /arch base
 genfstab -U /arch >> /arch/etc/fstab
+arch-chroot /arch
 
-pacman -S grub openssh virtualbox-guest-utils
+pacman -Sy grub openssh virtualbox-guest-utils
 	2 virtualbox-guest-modules-arch––
 
 rm /etc/localtime
@@ -37,7 +38,7 @@ locale-gen
 echo 'LANG=hu_HU.UTF-8' > /etc/locale.conf
 echo $'KEYMAP=hu\nFONT=lat2-16\nFONT_MAP=8859-2' > /etc/vconsole.conf
 echo 'arch1' > /etc/hostname
-echo $'127.0.0.1\tlocalhost.localdomain\tlocalhost\n::1\t\t\tlocalhost.localdomain\tlocalhost\n127.0.1.1\tarch1.localdomain\tarch1' > /etc/hosts
+echo $'127.0.0.1\tlocalhost.localdomain\tlocalhost\n::1\t\tlocalhost.localdomain\tlocalhost\n127.0.1.1\tarch1.localdomain\tarch1' > /etc/hosts
 
 ip a––
 
